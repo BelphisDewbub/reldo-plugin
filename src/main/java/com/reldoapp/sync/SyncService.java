@@ -16,6 +16,7 @@ import okhttp3.Response;
 public class SyncService
 {
 	private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+	private static final String SYNC_URL = "https://www.reldoapp.com/api/plugin_sync.php";
 
 	@Inject
 	private OkHttpClient httpClient;
@@ -38,11 +39,10 @@ public class SyncService
 			return SyncResult.error("No API token set. Generate one in Reldo Settings.");
 		}
 
-		String url = config.baseUrl().trim().replaceAll("/$", "") + "/api/plugin_sync.php";
 		String body = gson.toJson(payload);
 
 		Request request = new Request.Builder()
-			.url(url)
+			.url(SYNC_URL)
 			.header("Authorization", "Bearer " + token)
 			.put(RequestBody.create(JSON, body))
 			.build();

@@ -28,19 +28,7 @@ public interface ReldoConfig extends Config
 		return "";
 	}
 
-	@ConfigItem(
-		keyName = "baseUrl",
-		name = "Reldo URL",
-		description = "Base URL of your Reldo instance (no trailing slash)",
-		section = connectionSection,
-		position = 2
-	)
-	default String baseUrl()
-	{
-		return "https://reldo.app";
-	}
-
-	@ConfigSection(
+@ConfigSection(
 		name = "Sync",
 		description = "What to sync and when",
 		position = 10
