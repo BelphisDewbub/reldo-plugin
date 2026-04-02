@@ -6,6 +6,8 @@ import com.reldoapp.data.LeagueTaskMapper;
 import com.reldoapp.data.QuestMapper;
 import com.reldoapp.sync.SyncResult;
 import com.reldoapp.sync.SyncService;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -24,7 +26,6 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
-import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 @PluginDescriptor(
@@ -60,7 +61,11 @@ public class ReldoPlugin extends Plugin
 	{
 		panel = injector.getInstance(ReldoPanel.class);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "reldo_icon.png");
+		final BufferedImage icon = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		final Graphics2D g = icon.createGraphics();
+		g.setColor(new Color(0xFF, 0xC8, 0x00)); // gold
+		g.fillRect(0, 0, 16, 16);
+		g.dispose();
 		navButton = NavigationButton.builder()
 			.tooltip("Reldo")
 			.icon(icon)
