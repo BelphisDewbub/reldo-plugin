@@ -3,17 +3,71 @@ package com.reldoapp;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("reldo")
 public interface ReldoConfig extends Config
 {
-	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
+	@ConfigSection(
+		name = "Connection",
+		description = "Settings for connecting to your Reldo instance",
+		position = 0
 	)
-	default String greeting()
+	String connectionSection = "connection";
+
+	@ConfigItem(
+		keyName = "apiToken",
+		name = "API Token",
+		description = "Generate this in Reldo → Settings → Plugin API Token",
+		secret = true,
+		section = connectionSection,
+		position = 1
+	)
+	default String apiToken()
 	{
-		return "Hello";
+		return "";
+	}
+
+	@ConfigItem(
+		keyName = "baseUrl",
+		name = "Reldo URL",
+		description = "Base URL of your Reldo instance (no trailing slash)",
+		section = connectionSection,
+		position = 2
+	)
+	default String baseUrl()
+	{
+		return "https://reldo.app";
+	}
+
+	@ConfigSection(
+		name = "Sync",
+		description = "What to sync and when",
+		position = 10
+	)
+	String syncSection = "sync";
+
+	@ConfigItem(
+		keyName = "syncOnLogin",
+		name = "Sync on login",
+		description = "Automatically sync when you log in",
+		section = syncSection,
+		position = 11
+	)
+	default boolean syncOnLogin()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "activeLeagueId",
+		name = "Active League ID",
+		description = "League task varbit ID set to read (e.g. raging_echoes). Leave blank to skip league sync.",
+		section = syncSection,
+		position = 12
+	)
+	default String activeLeagueId()
+	{
+		return "";
 	}
 }
