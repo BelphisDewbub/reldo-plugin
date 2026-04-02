@@ -1,9 +1,11 @@
 package com.reldoapp;
 
 import com.google.inject.Provides;
+import com.reldoapp.data.CombatAchievementMapper;
 import com.reldoapp.data.DiaryMapper;
 import com.reldoapp.data.LeagueTaskMapper;
 import com.reldoapp.data.QuestMapper;
+import com.reldoapp.data.SkillMapper;
 import com.reldoapp.sync.SyncResult;
 import com.reldoapp.sync.SyncService;
 import java.awt.Color;
@@ -63,9 +65,10 @@ public class ReldoPlugin extends Plugin
 
 		final BufferedImage icon = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 		final Graphics2D g = icon.createGraphics();
-		g.setColor(new Color(0xFF, 0xC8, 0x00)); // gold
+		g.setColor(new Color(0xFF, 0xC8, 0x00));
 		g.fillRect(0, 0, 16, 16);
 		g.dispose();
+
 		navButton = NavigationButton.builder()
 			.tooltip("Reldo")
 			.icon(icon)
@@ -131,8 +134,10 @@ public class ReldoPlugin extends Plugin
 		// Collect all game data while on the client thread
 		Map<String, Object> payload = new LinkedHashMap<>();
 		payload.put("character_name", playerName);
+		payload.put("skills", SkillMapper.collectSkills(client));
 		payload.put("quests", QuestMapper.collectQuests(client));
 		payload.put("achievement_diaries", DiaryMapper.collectDiaries(client));
+		payload.put("combat_achievements", CombatAchievementMapper.collectCombatAchievements(client));
 
 		League league = config.activeLeague();
 		if (league != League.NONE)
@@ -143,6 +148,7 @@ public class ReldoPlugin extends Plugin
 			{
 				Map<String, Object> leaguePayload = new LinkedHashMap<>();
 				leaguePayload.put("tasks", taskMap);
+				leaguePayload.put("skills", SkillMapper.collectSkills(client));
 				payload.put("leagues", Map.of(leagueId, leaguePayload));
 			}
 		}
