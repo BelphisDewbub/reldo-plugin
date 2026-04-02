@@ -134,9 +134,10 @@ public class ReldoPlugin extends Plugin
 		payload.put("quests", QuestMapper.collectQuests(client));
 		payload.put("achievement_diaries", DiaryMapper.collectDiaries(client));
 
-		String leagueId = config.activeLeagueId().trim();
-		if (!leagueId.isEmpty())
+		League league = config.activeLeague();
+		if (league != League.NONE)
 		{
+			String leagueId = league.getLeagueId();
 			Map<String, Object> taskMap = LeagueTaskMapper.collectTasks(client, leagueId);
 			if (taskMap != null)
 			{

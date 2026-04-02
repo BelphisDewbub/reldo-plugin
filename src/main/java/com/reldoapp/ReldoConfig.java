@@ -60,14 +60,14 @@ public interface ReldoConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "activeLeagueId",
-		name = "Active League ID",
-		description = "League task varbit ID set to read (e.g. raging_echoes). Leave blank to skip league sync.",
+		keyName = "activeLeague",
+		name = "Active League",
+		description = "League to sync tasks for. Select None to skip league sync.",
 		section = syncSection,
 		position = 12
 	)
-	default String activeLeagueId()
+	default League activeLeague()
 	{
-		return "";
+		return League.NONE;
 	}
 }
