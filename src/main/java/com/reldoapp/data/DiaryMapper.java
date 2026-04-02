@@ -3,7 +3,6 @@ package com.reldoapp.data;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.runelite.api.Client;
-import net.runelite.api.Varbits;
 
 public class DiaryMapper
 {
@@ -12,35 +11,37 @@ public class DiaryMapper
 	 * Varbit returns 1 when all tasks in that tier are completed.
 	 * Order matches REGION_NAMES below.
 	 *
-	 * Varbit IDs sourced from net.runelite.api.Varbits and the OSRS wiki.
+	 * Raw integer IDs sourced from the OSRS wiki Achievement Diary page.
+	 * Using raw IDs rather than Varbits enum constants to avoid compile-time
+	 * dependency on constants that may be missing or renamed across RuneLite versions.
 	 */
 	private static final int[][] TIER_VARBITS = {
 		// Ardougne
-		{Varbits.DIARY_ARDOUGNE_EASY, Varbits.DIARY_ARDOUGNE_MEDIUM, Varbits.DIARY_ARDOUGNE_HARD, Varbits.DIARY_ARDOUGNE_ELITE},
+		{4458, 4459, 4460, 4461},
 		// Desert
-		{Varbits.DIARY_DESERT_EASY, Varbits.DIARY_DESERT_MEDIUM, Varbits.DIARY_DESERT_HARD, Varbits.DIARY_DESERT_ELITE},
+		{4471, 4472, 4473, 4474},
 		// Falador
-		{Varbits.DIARY_FALADOR_EASY, Varbits.DIARY_FALADOR_MEDIUM, Varbits.DIARY_FALADOR_HARD, Varbits.DIARY_FALADOR_ELITE},
+		{4462, 4463, 4464, 4465},
 		// Fremennik
-		{Varbits.DIARY_FREMENNIK_EASY, Varbits.DIARY_FREMENNIK_MEDIUM, Varbits.DIARY_FREMENNIK_HARD, Varbits.DIARY_FREMENNIK_ELITE},
+		{4475, 4476, 4477, 4478},
 		// Kandarin
-		{Varbits.DIARY_KANDARIN_EASY, Varbits.DIARY_KANDARIN_MEDIUM, Varbits.DIARY_KANDARIN_HARD, Varbits.DIARY_KANDARIN_ELITE},
+		{4479, 4480, 4481, 4482},
 		// Karamja
-		{Varbits.DIARY_KARAMJA_EASY, Varbits.DIARY_KARAMJA_MEDIUM, Varbits.DIARY_KARAMJA_HARD, Varbits.DIARY_KARAMJA_ELITE},
+		{4483, 4484, 4485, 4486},
 		// Kourend & Kebos
-		{Varbits.DIARY_KOUREND_EASY, Varbits.DIARY_KOUREND_MEDIUM, Varbits.DIARY_KOUREND_HARD, Varbits.DIARY_KOUREND_ELITE},
+		{7925, 7926, 7927, 7928},
 		// Lumbridge & Draynor
-		{Varbits.DIARY_LUMBRIDGE_EASY, Varbits.DIARY_LUMBRIDGE_MEDIUM, Varbits.DIARY_LUMBRIDGE_HARD, Varbits.DIARY_LUMBRIDGE_ELITE},
+		{4487, 4488, 4489, 4490},
 		// Morytania
-		{Varbits.DIARY_MORYTANIA_EASY, Varbits.DIARY_MORYTANIA_MEDIUM, Varbits.DIARY_MORYTANIA_HARD, Varbits.DIARY_MORYTANIA_ELITE},
+		{4491, 4492, 4493, 4494},
 		// Tirannwn
-		{Varbits.DIARY_TIRANNWN_EASY, Varbits.DIARY_TIRANNWN_MEDIUM, Varbits.DIARY_TIRANNWN_HARD, Varbits.DIARY_TIRANNWN_ELITE},
+		{4495, 4496, 4497, 4498},
 		// Varrock
-		{Varbits.DIARY_VARROCK_EASY, Varbits.DIARY_VARROCK_MEDIUM, Varbits.DIARY_VARROCK_HARD, Varbits.DIARY_VARROCK_ELITE},
+		{4466, 4467, 4468, 4469},
 		// Western Provinces
-		{Varbits.DIARY_WESTERN_EASY, Varbits.DIARY_WESTERN_MEDIUM, Varbits.DIARY_WESTERN_HARD, Varbits.DIARY_WESTERN_ELITE},
+		{4499, 4500, 4501, 4502},
 		// Wilderness
-		{Varbits.DIARY_WILDERNESS_EASY, Varbits.DIARY_WILDERNESS_MEDIUM, Varbits.DIARY_WILDERNESS_HARD, Varbits.DIARY_WILDERNESS_ELITE},
+		{4503, 4504, 4505, 4506},
 	};
 
 	/** Region names matching keys in Reldo's achievement_diaries field. */

@@ -44,7 +44,7 @@ public class SyncService
 		Request request = new Request.Builder()
 			.url(url)
 			.header("Authorization", "Bearer " + token)
-			.put(RequestBody.create(body, JSON))
+			.put(RequestBody.create(JSON, body))
 			.build();
 
 		try (Response response = httpClient.newCall(request).execute())
