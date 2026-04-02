@@ -60,7 +60,7 @@ public class ReldoPlugin extends Plugin
 	{
 		panel = injector.getInstance(ReldoPanel.class);
 
-		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "/reldo_icon.png");
+		final BufferedImage icon = ImageUtil.loadImageResource(getClass(), "reldo_icon.png");
 		navButton = NavigationButton.builder()
 			.tooltip("Reldo")
 			.icon(icon)
@@ -75,7 +75,10 @@ public class ReldoPlugin extends Plugin
 	@Override
 	protected void shutDown()
 	{
-		clientToolbar.removeNavigation(navButton);
+		if (navButton != null)
+		{
+			clientToolbar.removeNavigation(navButton);
+		}
 		panel = null;
 		navButton = null;
 		log.debug("Reldo plugin stopped");
