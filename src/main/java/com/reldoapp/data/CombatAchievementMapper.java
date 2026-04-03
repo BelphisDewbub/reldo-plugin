@@ -7,18 +7,29 @@ import net.runelite.api.Client;
 public class CombatAchievementMapper
 {
 	/**
-	 * Maps varbit ID (wikiId) to { tier, taskName } for each CA task.
-	 * taskName matches the key used in Reldo character data.
-	 * Generated from data/game/combat_achievements.json.
+	 * VarPlayer IDs for CA_TASK_COMPLETED_0 through CA_TASK_COMPLETED_17.
+	 * Each holds 32 task completion flags as bits.
+	 * wikiId / 32 = varplayer array index, wikiId % 32 = bit position.
+	 * Covers tasks with wikiId 0-575 (576 of 637 total tasks).
+	 * Tasks 576-636 need additional varplayer IDs not yet documented.
 	 */
+	private static final int[] VARPLAYER_IDS = {
+		3116, 3117, 3118, 3119, 3120, 3121, 3122, 3123, 3124, 3125, 3126, 3127, 3128, // 0-12
+		3387, // 13
+		3718, // 14
+		3773, 3774, // 15-16
+		4204  // 17
+	};
+
+	/** Maps wikiId to { tier, taskName } for tasks with known varplayer IDs. */
 	private static final Map<Integer, String[]> TASK_MAP = new HashMap<>();
 	static
 	{
+		TASK_MAP.put(0, new String[]{"easy", "Noxious Foe"});
 		TASK_MAP.put(24, new String[]{"easy", "Barrows Novice"});
 		TASK_MAP.put(28, new String[]{"easy", "Defence? What Defence?"});
 		TASK_MAP.put(32, new String[]{"easy", "Big, Black and Fiery"});
 		TASK_MAP.put(33, new String[]{"easy", "The Demonic Punching Bag"});
-		TASK_MAP.put(632, new String[]{"easy", "Brutus Novice"});
 		TASK_MAP.put(37, new String[]{"easy", "Protection from Moss"});
 		TASK_MAP.put(35, new String[]{"easy", "Bryophyta Novice"});
 		TASK_MAP.put(40, new String[]{"easy", "A Slow Death"});
@@ -37,14 +48,9 @@ public class CombatAchievementMapper
 		TASK_MAP.put(134, new String[]{"easy", "Fighting as Intended"});
 		TASK_MAP.put(131, new String[]{"easy", "Sleeping Giant"});
 		TASK_MAP.put(129, new String[]{"easy", "Obor Novice"});
-		TASK_MAP.put(591, new String[]{"easy", "One by one"});
-		TASK_MAP.put(594, new String[]{"easy", "Elemental Company"});
-		TASK_MAP.put(597, new String[]{"easy", "Let them fight"});
 		TASK_MAP.put(206, new String[]{"easy", "Sarachnis Novice"});
 		TASK_MAP.put(521, new String[]{"easy", "Scurrius Novice"});
 		TASK_MAP.put(523, new String[]{"easy", "Sit Rat"});
-		TASK_MAP.put(625, new String[]{"easy", "Shellbane Adept"});
-		TASK_MAP.put(630, new String[]{"easy", "Dry Cleaning"});
 		TASK_MAP.put(357, new String[]{"easy", "Calm Before the Storm"});
 		TASK_MAP.put(356, new String[]{"easy", "Master of Buckets"});
 		TASK_MAP.put(353, new String[]{"easy", "Tempoross Novice"});
@@ -54,14 +60,10 @@ public class CombatAchievementMapper
 		TASK_MAP.put(279, new String[]{"easy", "Wintertodt Novice"});
 		TASK_MAP.put(281, new String[]{"easy", "Mummy!"});
 		TASK_MAP.put(287, new String[]{"easy", "A Slithery Encounter"});
-		TASK_MAP.put(579, new String[]{"medium", "Amoxliatl Champion"});
-		TASK_MAP.put(584, new String[]{"medium", "Temotli Triumph"});
 		TASK_MAP.put(26, new String[]{"medium", "Can't Touch Me"});
 		TASK_MAP.put(27, new String[]{"medium", "Pray for Success"});
 		TASK_MAP.put(25, new String[]{"medium", "Barrows Champion"});
 		TASK_MAP.put(34, new String[]{"medium", "Brutal, Big, Black and Firey"});
-		TASK_MAP.put(633, new String[]{"medium", "Brutus Champion"});
-		TASK_MAP.put(635, new String[]{"medium", "Beef vs Beef"});
 		TASK_MAP.put(38, new String[]{"medium", "Quick Cutter"});
 		TASK_MAP.put(36, new String[]{"medium", "Bryophyta Champion"});
 		TASK_MAP.put(61, new String[]{"medium", "Chaos Fanatic Champion"});
@@ -92,17 +94,11 @@ public class CombatAchievementMapper
 		TASK_MAP.put(133, new String[]{"medium", "Squashing the Giant"});
 		TASK_MAP.put(130, new String[]{"medium", "Obor Champion"});
 		TASK_MAP.put(132, new String[]{"medium", "Back to the Wall"});
-		TASK_MAP.put(590, new String[]{"medium", "Royal Titan Adept"});
-		TASK_MAP.put(598, new String[]{"medium", "It takes too long"});
-		TASK_MAP.put(589, new String[]{"medium", "Royal Titan Champion"});
 		TASK_MAP.put(207, new String[]{"medium", "Sarachnis Champion"});
 		TASK_MAP.put(210, new String[]{"medium", "Newspaper Enthusiast"});
 		TASK_MAP.put(522, new String[]{"medium", "Scurrius Champion"});
 		TASK_MAP.put(525, new String[]{"medium", "Efficient Pest Control"});
 		TASK_MAP.put(524, new String[]{"medium", "Perfect Scurrius"});
-		TASK_MAP.put(628, new String[]{"medium", "Shellbane Speedrunner"});
-		TASK_MAP.put(626, new String[]{"medium", "Shellbane Veteran"});
-		TASK_MAP.put(627, new String[]{"medium", "Perfect Shellbane"});
 		TASK_MAP.put(223, new String[]{"medium", "A Frozen Foe from the Past"});
 		TASK_MAP.put(46, new String[]{"medium", "Demonic Weakening"});
 		TASK_MAP.put(44, new String[]{"medium", "Skotizo Champion"});
@@ -118,14 +114,8 @@ public class CombatAchievementMapper
 		TASK_MAP.put(5, new String[]{"hard", "Don't Whip Me"});
 		TASK_MAP.put(7, new String[]{"hard", "Don't Stop Moving"});
 		TASK_MAP.put(1, new String[]{"hard", "Abyssal Adept"});
-		TASK_MAP.put(581, new String[]{"hard", "Amoxliatl Speed-Trialist"});
-		TASK_MAP.put(580, new String[]{"hard", "Amoxliatl Adept"});
-		TASK_MAP.put(583, new String[]{"hard", "Nagua Negation"});
-		TASK_MAP.put(586, new String[]{"hard", "Kemo Makti"});
-		TASK_MAP.put(587, new String[]{"hard", "Totally Shattered"});
 		TASK_MAP.put(29, new String[]{"hard", "Just Like That"});
 		TASK_MAP.put(30, new String[]{"hard", "Faithless Crypt Run"});
-		TASK_MAP.put(636, new String[]{"hard", "Smarter than a Cow"});
 		TASK_MAP.put(42, new String[]{"hard", "Callisto Adept"});
 		TASK_MAP.put(57, new String[]{"hard", "Chaos Elemental Adept"});
 		TASK_MAP.put(60, new String[]{"hard", "The Flincher"});
@@ -172,17 +162,11 @@ public class CombatAchievementMapper
 		TASK_MAP.put(537, new String[]{"hard", "Fat of the Land"});
 		TASK_MAP.put(533, new String[]{"hard", "Betrayal"});
 		TASK_MAP.put(478, new String[]{"hard", "Phantom Muspah Adept"});
-		TASK_MAP.put(592, new String[]{"hard", "Royal Titan Speed-Runner"});
-		TASK_MAP.put(588, new String[]{"hard", "Perfect Royal Titans"});
-		TASK_MAP.put(593, new String[]{"hard", "Titan Killer"});
-		TASK_MAP.put(595, new String[]{"hard", "I need room"});
 		TASK_MAP.put(209, new String[]{"hard", "Inspect Repellent"});
 		TASK_MAP.put(208, new String[]{"hard", "Ready to Pounce"});
 		TASK_MAP.put(220, new String[]{"hard", "I Can't Reach That"});
 		TASK_MAP.put(221, new String[]{"hard", "Guardians No More"});
 		TASK_MAP.put(218, new String[]{"hard", "Scorpia Adept"});
-		TASK_MAP.put(629, new String[]{"hard", "Shellbane Survivor"});
-		TASK_MAP.put(631, new String[]{"hard", "Featherweight Fighter"});
 		TASK_MAP.put(45, new String[]{"hard", "Skotizo Adept"});
 		TASK_MAP.put(355, new String[]{"hard", "Dress Like You Mean It"});
 		TASK_MAP.put(358, new String[]{"hard", "Why Cook?"});
@@ -204,13 +188,10 @@ public class CombatAchievementMapper
 		TASK_MAP.put(2, new String[]{"elite", "Abyssal Veteran"});
 		TASK_MAP.put(8, new String[]{"elite", "Perfect Sire"});
 		TASK_MAP.put(135, new String[]{"elite", "Alchemical Veteran"});
-		TASK_MAP.put(582, new String[]{"elite", "Amoxliatl Speed-Chaser"});
-		TASK_MAP.put(585, new String[]{"elite", "Without Ralos' Light"});
 		TASK_MAP.put(558, new String[]{"elite", "Araxxor Speed-Trialist"});
 		TASK_MAP.put(564, new String[]{"elite", "Relaxxor"});
 		TASK_MAP.put(556, new String[]{"elite", "Araxxor Veteran"});
 		TASK_MAP.put(31, new String[]{"elite", "Reflecting on This Encounter"});
-		TASK_MAP.put(634, new String[]{"elite", "Brutus Speed-Trialist"});
 		TASK_MAP.put(43, new String[]{"elite", "Callisto Veteran"});
 		TASK_MAP.put(51, new String[]{"elite", "Cerberus Veteran"});
 		TASK_MAP.put(55, new String[]{"elite", "Unrequired Antifire"});
@@ -250,9 +231,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(235, new String[]{"elite", "Death to the Archer King"});
 		TASK_MAP.put(74, new String[]{"elite", "If Gorillas Could Fly"});
 		TASK_MAP.put(75, new String[]{"elite", "Hitting Them Where It Hurts"});
-		TASK_MAP.put(610, new String[]{"elite", "Doom Adept"});
-		TASK_MAP.put(621, new String[]{"elite", "Doom Crawler"});
-		TASK_MAP.put(613, new String[]{"elite", "Exposed Doom"});
 		TASK_MAP.put(515, new String[]{"elite", "Duke Sucellus Adept"});
 		TASK_MAP.put(512, new String[]{"elite", "Duke Sucellus Speed-Trialist"});
 		TASK_MAP.put(548, new String[]{"elite", "I was here first!"});
@@ -289,13 +267,11 @@ public class CombatAchievementMapper
 		TASK_MAP.put(475, new String[]{"elite", "Phantom Muspah Speed-Trialist"});
 		TASK_MAP.put(473, new String[]{"elite", "Can't Escape"});
 		TASK_MAP.put(400, new String[]{"elite", "Phosani's Veteran"});
-		TASK_MAP.put(596, new String[]{"elite", "No time to pray"});
 		TASK_MAP.put(219, new String[]{"elite", "Scorpia Veteran"});
 		TASK_MAP.put(47, new String[]{"elite", "Demon Evasion"});
 		TASK_MAP.put(49, new String[]{"elite", "Up for the Challenge"});
 		TASK_MAP.put(570, new String[]{"elite", "Hueycoatl Veteran"});
 		TASK_MAP.put(571, new String[]{"elite", "Perfect Hueycoatl"});
-		TASK_MAP.put(576, new String[]{"elite", "Hueycoatl Speed-Trialist"});
 		TASK_MAP.put(176, new String[]{"elite", "Mimic Veteran"});
 		TASK_MAP.put(194, new String[]{"elite", "Nightmare (5-Scale) Speed-Trialist"});
 		TASK_MAP.put(191, new String[]{"elite", "Nightmare (Solo) Speed-Trialist"});
@@ -350,9 +326,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(494, new String[]{"elite", "Whisperer Speed-Trialist"});
 		TASK_MAP.put(497, new String[]{"elite", "Whisperer Adept"});
 		TASK_MAP.put(501, new String[]{"elite", "Tentacular"});
-		TASK_MAP.put(607, new String[]{"elite", "Back so soon?"});
-		TASK_MAP.put(601, new String[]{"elite", "Yama Speed-Trialist"});
-		TASK_MAP.put(599, new String[]{"elite", "Yama Adept"});
 		TASK_MAP.put(330, new String[]{"elite", "Team Player"});
 		TASK_MAP.put(328, new String[]{"elite", "Zalcano Veteran"});
 		TASK_MAP.put(329, new String[]{"elite", "Perfect Zalcano"});
@@ -409,11 +382,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(117, new String[]{"master", "Gauntlet Speed-Chaser"});
 		TASK_MAP.put(110, new String[]{"master", "Gauntlet Master"});
 		TASK_MAP.put(112, new String[]{"master", "Perfect Crystalline Hunllef"});
-		TASK_MAP.put(622, new String[]{"master", "Doom Chaser"});
-		TASK_MAP.put(614, new String[]{"master", "Mokhaiotl Drift"});
-		TASK_MAP.put(620, new String[]{"master", "Mine's Better"});
-		TASK_MAP.put(611, new String[]{"master", "Doom Veteran"});
-		TASK_MAP.put(615, new String[]{"master", "Grub Patrol"});
 		TASK_MAP.put(519, new String[]{"master", "Cold Feet"});
 		TASK_MAP.put(513, new String[]{"master", "Duke Sucellus Speed-Chaser"});
 		TASK_MAP.put(518, new String[]{"master", "Perfect Duke Sucellus"});
@@ -453,7 +421,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(401, new String[]{"master", "Phosani's Master"});
 		TASK_MAP.put(50, new String[]{"master", "Precise Positioning"});
 		TASK_MAP.put(573, new String[]{"master", "Is it a bird?"});
-		TASK_MAP.put(577, new String[]{"master", "Hueycoatl Speed-Chaser"});
 		TASK_MAP.put(185, new String[]{"master", "Nightmare Master"});
 		TASK_MAP.put(195, new String[]{"master", "Nightmare (5-Scale) Speed-Chaser"});
 		TASK_MAP.put(192, new String[]{"master", "Nightmare (Solo) Speed-Chaser"});
@@ -521,11 +488,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(495, new String[]{"master", "Whisperer Speed-Chaser"});
 		TASK_MAP.put(498, new String[]{"master", "Whisperer Master"});
 		TASK_MAP.put(500, new String[]{"master", "Perfect Whisperer"});
-		TASK_MAP.put(604, new String[]{"master", "No toppings, no drinks, thanks"});
-		TASK_MAP.put(600, new String[]{"master", "Yama Veteran"});
-		TASK_MAP.put(606, new String[]{"master", "Fire fighter"});
-		TASK_MAP.put(602, new String[]{"master", "Yama Speed-Chaser"});
-		TASK_MAP.put(605, new String[]{"master", "Shadow dancer"});
 		TASK_MAP.put(231, new String[]{"master", "Zulrah Speed-Chaser"});
 		TASK_MAP.put(229, new String[]{"master", "Perfect Zulrah"});
 		TASK_MAP.put(226, new String[]{"master", "Zulrah Master"});
@@ -549,13 +511,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(106, new String[]{"grandmaster", "Wolf Puncher II"});
 		TASK_MAP.put(100, new String[]{"grandmaster", "Corrupted Gauntlet Grandmaster"});
 		TASK_MAP.put(118, new String[]{"grandmaster", "Gauntlet Speed-Runner"});
-		TASK_MAP.put(624, new String[]{"grandmaster", "Mopping up"});
-		TASK_MAP.put(618, new String[]{"grandmaster", "Duel of Mokhaiotl"});
-		TASK_MAP.put(619, new String[]{"grandmaster", "Darkness Is Your Ally?"});
-		TASK_MAP.put(623, new String[]{"grandmaster", "Doom Racer"});
-		TASK_MAP.put(612, new String[]{"grandmaster", "It's Dark Down Here"});
-		TASK_MAP.put(617, new String[]{"grandmaster", "The Praying Mantis"});
-		TASK_MAP.put(616, new String[]{"grandmaster", "Perfect Doom"});
 		TASK_MAP.put(514, new String[]{"grandmaster", "Duke Sucellus Speed-Runner"});
 		TASK_MAP.put(517, new String[]{"grandmaster", "Duke Sucellus Sleeper"});
 		TASK_MAP.put(520, new String[]{"grandmaster", "Mirror Image"});
@@ -584,7 +539,6 @@ public class CombatAchievementMapper
 		TASK_MAP.put(405, new String[]{"grandmaster", "Phosani's Speedrunner"});
 		TASK_MAP.put(403, new String[]{"grandmaster", "Perfect Phosani's Nightmare"});
 		TASK_MAP.put(402, new String[]{"grandmaster", "Phosani's Grandmaster"});
-		TASK_MAP.put(578, new String[]{"grandmaster", "Hueycoatl Speed-Runner"});
 		TASK_MAP.put(186, new String[]{"grandmaster", "Terrible Parent"});
 		TASK_MAP.put(193, new String[]{"grandmaster", "Nightmare (Solo) Speed-Runner"});
 		TASK_MAP.put(190, new String[]{"grandmaster", "A Long Trip"});
@@ -646,15 +600,12 @@ public class CombatAchievementMapper
 		TASK_MAP.put(499, new String[]{"grandmaster", "Whispered"});
 		TASK_MAP.put(502, new String[]{"grandmaster", "Dark Memories"});
 		TASK_MAP.put(496, new String[]{"grandmaster", "Whisperer Speed-Runner"});
-		TASK_MAP.put(609, new String[]{"grandmaster", "Contractually Unbound"});
-		TASK_MAP.put(603, new String[]{"grandmaster", "Yama Speed-Runner"});
-		TASK_MAP.put(608, new String[]{"grandmaster", "Contract Choreographer"});
 		TASK_MAP.put(232, new String[]{"grandmaster", "Zulrah Speed-Runner"});
 	}
 
 	/**
 	 * Collect completed combat achievement tasks grouped by tier.
-	 * Returns { tier: { taskName: true } } matching Reldo's combat_achievements format.
+	 * Returns { tier: { taskName: true } } matching Reldo combat_achievements format.
 	 * Must be called from the client thread.
 	 */
 	public static Map<String, Map<String, Boolean>> collectCombatAchievements(Client client)
@@ -662,7 +613,11 @@ public class CombatAchievementMapper
 		Map<String, Map<String, Boolean>> result = new HashMap<>();
 		for (Map.Entry<Integer, String[]> entry : TASK_MAP.entrySet())
 		{
-			if (client.getVarbitValue(entry.getKey()) == 1)
+			int wikiId = entry.getKey();
+			int varplayerIndex = wikiId / 32;
+			int bit = wikiId % 32;
+			int varplayerId = VARPLAYER_IDS[varplayerIndex];
+			if (((client.getVarpValue(varplayerId) >> bit) & 1) == 1)
 			{
 				String tier = entry.getValue()[0];
 				String name = entry.getValue()[1];
