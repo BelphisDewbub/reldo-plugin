@@ -7,17 +7,19 @@ import net.runelite.api.Client;
 public class CombatAchievementMapper
 {
 	/**
-	 * VarPlayer IDs for CA_TASK_COMPLETED_0 through CA_TASK_COMPLETED_17.
+	 * VarPlayer IDs for CA_TASK_COMPLETED_0 through CA_TASK_COMPLETED_19.
 	 * Each holds 32 task completion flags as bits.
 	 * wikiId / 32 = varplayer array index, wikiId % 32 = bit position.
-	 * Covers tasks with wikiId 0-575 (576 of 637 total tasks).
+	 * Covers tasks with wikiId 0-639 (all 637 current tasks).
 	 */
 	private static final int[] VARPLAYER_IDS = {
 		3116, 3117, 3118, 3119, 3120, 3121, 3122, 3123, 3124, 3125, 3126, 3127, 3128, // 0-12
 		3387, // 13
 		3718, // 14
 		3773, 3774, // 15-16
-		4204  // 17
+		4204, // 17
+		4496, // 18
+		4721  // 19
 	};
 
 	/** Maps wikiId to task id slug for tasks with known varplayer IDs. */
@@ -29,6 +31,7 @@ public class CombatAchievementMapper
 		TASK_MAP.put(28, "defence_what_defence");
 		TASK_MAP.put(32, "big_black_and_fiery");
 		TASK_MAP.put(33, "the_demonic_punching_bag");
+		TASK_MAP.put(632, "brutus_novice");
 		TASK_MAP.put(37, "protection_from_moss");
 		TASK_MAP.put(35, "bryophyta_novice");
 		TASK_MAP.put(40, "a_slow_death");
@@ -47,9 +50,14 @@ public class CombatAchievementMapper
 		TASK_MAP.put(134, "fighting_as_intended");
 		TASK_MAP.put(131, "sleeping_giant");
 		TASK_MAP.put(129, "obor_novice");
+		TASK_MAP.put(591, "one_by_one");
+		TASK_MAP.put(594, "elemental_company");
+		TASK_MAP.put(597, "let_them_fight");
 		TASK_MAP.put(206, "sarachnis_novice");
 		TASK_MAP.put(521, "scurrius_novice");
 		TASK_MAP.put(523, "sit_rat");
+		TASK_MAP.put(625, "shellbane_adept");
+		TASK_MAP.put(630, "dry_cleaning");
 		TASK_MAP.put(357, "calm_before_the_storm");
 		TASK_MAP.put(356, "master_of_buckets");
 		TASK_MAP.put(353, "tempoross_novice");
@@ -59,10 +67,14 @@ public class CombatAchievementMapper
 		TASK_MAP.put(279, "wintertodt_novice");
 		TASK_MAP.put(281, "mummy");
 		TASK_MAP.put(287, "a_slithery_encounter");
+		TASK_MAP.put(579, "amoxliatl_champion");
+		TASK_MAP.put(584, "temotli_triumph");
 		TASK_MAP.put(26, "cant_touch_me");
 		TASK_MAP.put(27, "pray_for_success");
 		TASK_MAP.put(25, "barrows_champion");
 		TASK_MAP.put(34, "brutal_big_black_and_firey");
+		TASK_MAP.put(633, "brutus_champion");
+		TASK_MAP.put(635, "beef_vs_beef");
 		TASK_MAP.put(38, "quick_cutter");
 		TASK_MAP.put(36, "bryophyta_champion");
 		TASK_MAP.put(61, "chaos_fanatic_champion");
@@ -93,11 +105,17 @@ public class CombatAchievementMapper
 		TASK_MAP.put(133, "squashing_the_giant");
 		TASK_MAP.put(130, "obor_champion");
 		TASK_MAP.put(132, "back_to_the_wall");
+		TASK_MAP.put(590, "royal_titan_adept");
+		TASK_MAP.put(598, "it_takes_too_long");
+		TASK_MAP.put(589, "royal_titan_champion");
 		TASK_MAP.put(207, "sarachnis_champion");
 		TASK_MAP.put(210, "newspaper_enthusiast");
 		TASK_MAP.put(522, "scurrius_champion");
 		TASK_MAP.put(525, "efficient_pest_control");
 		TASK_MAP.put(524, "perfect_scurrius");
+		TASK_MAP.put(628, "shellbane_speedrunner");
+		TASK_MAP.put(626, "shellbane_veteran");
+		TASK_MAP.put(627, "perfect_shellbane");
 		TASK_MAP.put(223, "a_frozen_foe_from_the_past");
 		TASK_MAP.put(46, "demonic_weakening");
 		TASK_MAP.put(44, "skotizo_champion");
@@ -113,8 +131,14 @@ public class CombatAchievementMapper
 		TASK_MAP.put(5, "dont_whip_me");
 		TASK_MAP.put(7, "dont_stop_moving");
 		TASK_MAP.put(1, "abyssal_adept");
+		TASK_MAP.put(581, "amoxliatl_speed_trialist");
+		TASK_MAP.put(580, "amoxliatl_adept");
+		TASK_MAP.put(583, "nagua_negation");
+		TASK_MAP.put(586, "kemo_makti");
+		TASK_MAP.put(587, "totally_shattered");
 		TASK_MAP.put(29, "just_like_that");
 		TASK_MAP.put(30, "faithless_crypt_run");
+		TASK_MAP.put(636, "smarter_than_a_cow");
 		TASK_MAP.put(42, "callisto_adept");
 		TASK_MAP.put(57, "chaos_elemental_adept");
 		TASK_MAP.put(60, "the_flincher");
@@ -161,11 +185,17 @@ public class CombatAchievementMapper
 		TASK_MAP.put(537, "fat_of_the_land");
 		TASK_MAP.put(533, "betrayal");
 		TASK_MAP.put(478, "phantom_muspah_adept");
+		TASK_MAP.put(592, "royal_titan_speed_runner");
+		TASK_MAP.put(588, "perfect_royal_titans");
+		TASK_MAP.put(593, "titan_killer");
+		TASK_MAP.put(595, "i_need_room");
 		TASK_MAP.put(209, "inspect_repellent");
 		TASK_MAP.put(208, "ready_to_pounce");
 		TASK_MAP.put(220, "i_cant_reach_that");
 		TASK_MAP.put(221, "guardians_no_more");
 		TASK_MAP.put(218, "scorpia_adept");
+		TASK_MAP.put(629, "shellbane_survivor");
+		TASK_MAP.put(631, "featherweight_fighter");
 		TASK_MAP.put(45, "skotizo_adept");
 		TASK_MAP.put(355, "dress_like_you_mean_it");
 		TASK_MAP.put(358, "why_cook");
@@ -187,10 +217,13 @@ public class CombatAchievementMapper
 		TASK_MAP.put(2, "abyssal_veteran");
 		TASK_MAP.put(8, "perfect_sire");
 		TASK_MAP.put(135, "alchemical_veteran");
+		TASK_MAP.put(582, "amoxliatl_speed_chaser");
+		TASK_MAP.put(585, "without_ralos_light");
 		TASK_MAP.put(558, "araxxor_speed_trialist");
 		TASK_MAP.put(564, "relaxxor");
 		TASK_MAP.put(556, "araxxor_veteran");
 		TASK_MAP.put(31, "reflecting_on_this_encounter");
+		TASK_MAP.put(634, "brutus_speed_trialist");
 		TASK_MAP.put(43, "callisto_veteran");
 		TASK_MAP.put(51, "cerberus_veteran");
 		TASK_MAP.put(55, "unrequired_antifire");
@@ -230,6 +263,9 @@ public class CombatAchievementMapper
 		TASK_MAP.put(235, "death_to_the_archer_king");
 		TASK_MAP.put(74, "if_gorillas_could_fly");
 		TASK_MAP.put(75, "hitting_them_where_it_hurts");
+		TASK_MAP.put(610, "doom_adept");
+		TASK_MAP.put(621, "doom_crawler");
+		TASK_MAP.put(613, "exposed_doom");
 		TASK_MAP.put(515, "duke_sucellus_adept");
 		TASK_MAP.put(512, "duke_sucellus_speed_trialist");
 		TASK_MAP.put(548, "i_was_here_first");
@@ -266,11 +302,13 @@ public class CombatAchievementMapper
 		TASK_MAP.put(475, "phantom_muspah_speed_trialist");
 		TASK_MAP.put(473, "cant_escape");
 		TASK_MAP.put(400, "phosanis_veteran");
+		TASK_MAP.put(596, "no_time_to_pray");
 		TASK_MAP.put(219, "scorpia_veteran");
 		TASK_MAP.put(47, "demon_evasion");
 		TASK_MAP.put(49, "up_for_the_challenge");
 		TASK_MAP.put(570, "hueycoatl_veteran");
 		TASK_MAP.put(571, "perfect_hueycoatl");
+		TASK_MAP.put(576, "hueycoatl_speed_trialist");
 		TASK_MAP.put(176, "mimic_veteran");
 		TASK_MAP.put(194, "nightmare_5_scale_speed_trialist");
 		TASK_MAP.put(191, "nightmare_solo_speed_trialist");
@@ -325,6 +363,9 @@ public class CombatAchievementMapper
 		TASK_MAP.put(494, "whisperer_speed_trialist");
 		TASK_MAP.put(497, "whisperer_adept");
 		TASK_MAP.put(501, "tentacular");
+		TASK_MAP.put(607, "back_so_soon");
+		TASK_MAP.put(601, "yama_speed_trialist");
+		TASK_MAP.put(599, "yama_adept");
 		TASK_MAP.put(330, "team_player");
 		TASK_MAP.put(328, "zalcano_veteran");
 		TASK_MAP.put(329, "perfect_zalcano");
@@ -381,6 +422,11 @@ public class CombatAchievementMapper
 		TASK_MAP.put(117, "gauntlet_speed_chaser");
 		TASK_MAP.put(110, "gauntlet_master");
 		TASK_MAP.put(112, "perfect_crystalline_hunllef");
+		TASK_MAP.put(622, "doom_chaser");
+		TASK_MAP.put(614, "mokhaiotl_drift");
+		TASK_MAP.put(620, "mines_better");
+		TASK_MAP.put(611, "doom_veteran");
+		TASK_MAP.put(615, "grub_patrol");
 		TASK_MAP.put(519, "cold_feet");
 		TASK_MAP.put(513, "duke_sucellus_speed_chaser");
 		TASK_MAP.put(518, "perfect_duke_sucellus");
@@ -420,6 +466,7 @@ public class CombatAchievementMapper
 		TASK_MAP.put(401, "phosanis_master");
 		TASK_MAP.put(50, "precise_positioning");
 		TASK_MAP.put(573, "is_it_a_bird");
+		TASK_MAP.put(577, "hueycoatl_speed_chaser");
 		TASK_MAP.put(185, "nightmare_master");
 		TASK_MAP.put(195, "nightmare_5_scale_speed_chaser");
 		TASK_MAP.put(192, "nightmare_solo_speed_chaser");
@@ -487,6 +534,11 @@ public class CombatAchievementMapper
 		TASK_MAP.put(495, "whisperer_speed_chaser");
 		TASK_MAP.put(498, "whisperer_master");
 		TASK_MAP.put(500, "perfect_whisperer");
+		TASK_MAP.put(604, "no_toppings_no_drinks_thanks");
+		TASK_MAP.put(600, "yama_veteran");
+		TASK_MAP.put(606, "fire_fighter");
+		TASK_MAP.put(602, "yama_speed_chaser");
+		TASK_MAP.put(605, "shadow_dancer");
 		TASK_MAP.put(231, "zulrah_speed_chaser");
 		TASK_MAP.put(229, "perfect_zulrah");
 		TASK_MAP.put(226, "zulrah_master");
@@ -510,6 +562,13 @@ public class CombatAchievementMapper
 		TASK_MAP.put(106, "wolf_puncher_ii");
 		TASK_MAP.put(100, "corrupted_gauntlet_grandmaster");
 		TASK_MAP.put(118, "gauntlet_speed_runner");
+		TASK_MAP.put(624, "mopping_up");
+		TASK_MAP.put(618, "duel_of_mokhaiotl");
+		TASK_MAP.put(619, "darkness_is_your_ally");
+		TASK_MAP.put(623, "doom_racer");
+		TASK_MAP.put(612, "its_dark_down_here");
+		TASK_MAP.put(617, "the_praying_mantis");
+		TASK_MAP.put(616, "perfect_doom");
 		TASK_MAP.put(514, "duke_sucellus_speed_runner");
 		TASK_MAP.put(517, "duke_sucellus_sleeper");
 		TASK_MAP.put(520, "mirror_image");
@@ -538,6 +597,7 @@ public class CombatAchievementMapper
 		TASK_MAP.put(405, "phosanis_speedrunner");
 		TASK_MAP.put(403, "perfect_phosanis_nightmare");
 		TASK_MAP.put(402, "phosanis_grandmaster");
+		TASK_MAP.put(578, "hueycoatl_speed_runner");
 		TASK_MAP.put(186, "terrible_parent");
 		TASK_MAP.put(193, "nightmare_solo_speed_runner");
 		TASK_MAP.put(190, "a_long_trip");
@@ -599,6 +659,9 @@ public class CombatAchievementMapper
 		TASK_MAP.put(499, "whispered");
 		TASK_MAP.put(502, "dark_memories");
 		TASK_MAP.put(496, "whisperer_speed_runner");
+		TASK_MAP.put(609, "contractually_unbound");
+		TASK_MAP.put(603, "yama_speed_runner");
+		TASK_MAP.put(608, "contract_choreographer");
 		TASK_MAP.put(232, "zulrah_speed_runner");
 	}
 

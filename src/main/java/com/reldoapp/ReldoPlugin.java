@@ -2,6 +2,7 @@ package com.reldoapp;
 
 import com.google.inject.Provides;
 import com.reldoapp.data.CombatAchievementMapper;
+import com.reldoapp.data.CollectionLogTracker;
 import com.reldoapp.data.DiaryMapper;
 import com.reldoapp.data.LeagueTaskMapper;
 import com.reldoapp.data.QuestMapper;
@@ -10,6 +11,7 @@ import com.reldoapp.sync.SyncResult;
 import com.reldoapp.sync.SyncService;
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +23,7 @@ import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -52,7 +55,13 @@ public class ReldoPlugin extends Plugin
 	private ScheduledExecutorService executor;
 
 	@Inject
+	private EventBus eventBus;
+
+	@Inject
 	private SyncService syncService;
+
+	@Inject
+	private CollectionLogTracker collectionLogTracker;
 
 	private ReldoPanel panel;
 	private NavigationButton navButton;
@@ -72,12 +81,20 @@ public class ReldoPlugin extends Plugin
 			.build();
 
 		clientToolbar.addNavigation(navButton);
+
+		// Load persisted collection log data, then register for live events
+		collectionLogTracker.load();
+		collectionLogTracker.setSyncCallback(() -> executor.submit(this::doCollectionLogSync));
+		eventBus.register(collectionLogTracker);
+
 		log.debug("Reldo plugin started");
 	}
 
 	@Override
 	protected void shutDown()
 	{
+		eventBus.unregister(collectionLogTracker);
+
 		if (navButton != null)
 		{
 			clientToolbar.removeNavigation(navButton);
@@ -98,7 +115,7 @@ public class ReldoPlugin extends Plugin
 	}
 
 	/**
-	 * Trigger a sync from outside the client thread (e.g., panel button click).
+	 * Trigger a full sync from outside the client thread (e.g., panel button click).
 	 */
 	void triggerSync()
 	{
@@ -106,7 +123,7 @@ public class ReldoPlugin extends Plugin
 	}
 
 	/**
-	 * Collect game state on the client thread, then fire the HTTP call on the executor.
+	 * Collect all game state on the client thread, then fire the HTTP call on the executor.
 	 * Must be called from the client thread.
 	 */
 	private void doSync()
@@ -132,8 +149,14 @@ public class ReldoPlugin extends Plugin
 		payload.put("skills", SkillMapper.collectSkills(client));
 		payload.put("quests", QuestMapper.collectQuests(client));
 		payload.put("achievement_diaries", DiaryMapper.collectDiaries(client));
-		// combat_achievements is a flat map: { task_slug: true }
 		payload.put("combat_achievements", CombatAchievementMapper.collectCombatAchievements(client));
+
+		// Include accumulated collection log data
+		List clItems = collectionLogTracker.getItems();
+		if (!clItems.isEmpty())
+		{
+			payload.put("collection_log", Map.of("items", clItems));
+		}
 
 		League league = config.activeLeague();
 		if (league != League.NONE)
@@ -155,6 +178,38 @@ public class ReldoPlugin extends Plugin
 			SyncResult result = syncService.send(payload);
 			SwingUtilities.invokeLater(() -> panel.showResult(result));
 		});
+	}
+
+	/**
+	 * Send only the collection log payload immediately after a new item is obtained
+	 * or the collection log UI is browsed. Lightweight — no client thread reads needed.
+	 */
+	private void doCollectionLogSync()
+	{
+		if (client.getGameState() != GameState.LOGGED_IN)
+		{
+			return;
+		}
+
+		String playerName = client.getLocalPlayer() != null
+			? client.getLocalPlayer().getName()
+			: null;
+		if (playerName == null || playerName.isEmpty())
+		{
+			return;
+		}
+
+		List clItems = collectionLogTracker.getItems();
+		if (clItems.isEmpty())
+		{
+			return;
+		}
+
+		Map<String, Object> payload = new LinkedHashMap<>();
+		payload.put("character_name", playerName);
+		payload.put("collection_log", Map.of("items", clItems));
+
+		syncService.send(payload); // already on executor thread via callback
 	}
 
 	@Provides
