@@ -132,6 +132,7 @@ public class ReldoPlugin extends Plugin
 		payload.put("skills", SkillMapper.collectSkills(client));
 		payload.put("quests", QuestMapper.collectQuests(client));
 		payload.put("achievement_diaries", DiaryMapper.collectDiaries(client));
+		// combat_achievements is a flat map: { task_slug: true }
 		payload.put("combat_achievements", CombatAchievementMapper.collectCombatAchievements(client));
 
 		League league = config.activeLeague();
